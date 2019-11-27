@@ -1,14 +1,17 @@
 package ru.itmo.phonebook.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import javax.persistence.*;
 
 @Entity
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode
+@AllArgsConstructor
 public class PhoneRecord {
     @Id @GeneratedValue
     private Long id;
@@ -19,4 +22,8 @@ public class PhoneRecord {
 
     @ManyToOne
     private User user;
+
+    public String toString() {
+        return String.format("{\"id\":%s,\"description\":\"%s\",\"phoneNumber\":\"%s\",\"user\":%s}",id, description, phoneNumber, user);
+    }
 }

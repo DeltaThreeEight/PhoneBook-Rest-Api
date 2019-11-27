@@ -38,24 +38,29 @@ public class UserController {
     }
 
     @PostMapping
-    public User newUser(@RequestBody User newUser) {
-        return userRepository.save(newUser);
+    public String newUser(@RequestBody User newUser) {
+        userRepository.save(newUser);
+        return "User successfully created";
     }
 
-    @PutMapping
-    public User editUser(@RequestBody User editedUser) {
-        return userRepository.findById(editedUser.getId()).map(user -> {
+    @PutMapping("{id}")
+    public String editUser(@PathVariable long id, @RequestBody User editedUser) {
+        userRepository.findById(id).map(user -> {
             user.setName(editedUser.getName());
             return userRepository.save(user);
-        }).orElseThrow(() -> new UserNotFoundException(editedUser.getId()));
+        }).orElseThrow(() -> new UserNotFoundException(id));
+
+        return "User successfully edited";
     }
 
     @DeleteMapping("{id}")
-    public void deleteUser(@PathVariable Long id) {
+    public String deleteUser(@PathVariable Long id) {
         if (!userRepository.findById(id).isPresent())
             throw new UserNotFoundException(id);
 
         userRepository.deleteById(id);
+
+        return "User successfully deleted";
     }
 
     @GetMapping("{id}")
