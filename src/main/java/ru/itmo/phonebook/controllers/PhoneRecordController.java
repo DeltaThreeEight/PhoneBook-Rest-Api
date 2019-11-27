@@ -20,16 +20,18 @@ public class PhoneRecordController {
     }
 
     @PostMapping
-    public PhoneRecord newPhoneRecord(@RequestBody PhoneRecord newPhoneRecord) {
-        return userRepository.findById(newPhoneRecord.getUser().getId()).map(user -> {
+    public String newPhoneRecord(@RequestBody PhoneRecord newPhoneRecord) {
+        userRepository.findById(newPhoneRecord.getUser().getId()).map(user -> {
             newPhoneRecord.setUser(user);
             return phoneRecordRepository.save(newPhoneRecord);
         }).orElseThrow(() -> new UserNotFoundException(newPhoneRecord.getUser().getId()));
+
+        return "Phone record successfully created";
     }
 
     @PutMapping("{id}")
-    public PhoneRecord editPhoneRecord(@PathVariable Long id, @RequestBody PhoneRecord editedPhoneRecord) {
-        return phoneRecordRepository.findById(id).map(record -> {
+    public String editPhoneRecord(@PathVariable Long id, @RequestBody PhoneRecord editedPhoneRecord) {
+        phoneRecordRepository.findById(id).map(record -> {
             User user = userRepository.findById(editedPhoneRecord.getUser().getId()).orElseThrow(() -> new UserNotFoundException(editedPhoneRecord.getUser().getId()));
 
             record.setUser(user);
@@ -37,19 +39,24 @@ public class PhoneRecordController {
             record.setPhoneNumber(editedPhoneRecord.getPhoneNumber());
             return phoneRecordRepository.save(record);
         }).orElseThrow(() -> new PhoneRecordNotFoundException(editedPhoneRecord.getId()));
+
+        return "Phone record successfully edited";
     }
 
     @DeleteMapping("{id}")
-    public void deletePhoneRecord(@PathVariable Long id) {
+    public String deletePhoneRecord(@PathVariable Long id) {
         if (!phoneRecordRepository.findById(id).isPresent())
             throw new PhoneRecordNotFoundException(id);
 
         phoneRecordRepository.deleteById(id);
+
+        return "Phone record successfully deleted";
     }
 
     @GetMapping("{id}")
     public PhoneRecord getPhoneRecord(@PathVariable Long id) {
-        return phoneRecordRepository.findById(id).orElseThrow(() -> new PhoneRecordNotFoundException(id));
+        return phoneRecordRepository.findById(id)
+                .orElseThrow(() -> new PhoneRecordNotFoundException(id));
     }
 
     @GetMapping("search")

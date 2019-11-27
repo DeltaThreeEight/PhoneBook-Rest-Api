@@ -1,50 +1,32 @@
 package ru.itmo.phonebook;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hibernate.mapping.Collection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.itmo.phonebook.controllers.UserController;
 import ru.itmo.phonebook.entities.PhoneRecord;
 import ru.itmo.phonebook.entities.User;
-import ru.itmo.phonebook.repositories.PhoneRecordRepository;
-import ru.itmo.phonebook.repositories.UserRepository;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
 @WebMvcTest(UserController.class)
-public class UserControllerTest {
+@RunWith(SpringRunner.class)
+public class UserControllerTest extends AbstractControllerTest {
 
     @Autowired
     private MockMvc mvc;
-
-    @MockBean
-    private UserRepository userRepository;
-
-    @MockBean
-    private PhoneRecordRepository phoneRecordRepository;
-
-    private String mapToJson(Object obj) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(obj);
-    }
-
 
     @Test
     public void getUsers() throws Exception {
