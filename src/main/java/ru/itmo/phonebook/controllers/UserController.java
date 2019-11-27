@@ -26,15 +26,15 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @GetMapping("{id}/points")
+    @GetMapping("{id}/records")
     public Collection<PhoneRecord> getAllUserPhoneRecords(@PathVariable long id) {
-        return userRepository.findById(id).map(user -> recordRepository.findAllUserRecords(user))
+        return userRepository.findById(id).map(user -> recordRepository.findAllByUser(user))
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
 
-    @GetMapping("search/{name}")
-    public List<User> findAllUsersByName(@PathVariable String name) {
-        return userRepository.findByName(name);
+    @GetMapping("search")
+    public List<User> findAllUsersByName(String name) {
+        return userRepository.findUsersByNameLike(name);
     }
 
     @PostMapping

@@ -11,8 +11,7 @@ import java.util.Collection;
 
 @RepositoryRestResource
 public interface PhoneRecordRepository extends JpaRepository<PhoneRecord, Long> {
-    @Query("SELECT u FROM PhoneRecord u WHERE u.user = ?1")
-    Collection<PhoneRecord> findAllUserRecords(User user);
+    Collection<PhoneRecord> findAllByUser(User user);
 
-    PhoneRecord findByPhoneNumber(@Param("phoneNumber") String number);
+    PhoneRecord findByPhoneNumberEquals(String number);
 }

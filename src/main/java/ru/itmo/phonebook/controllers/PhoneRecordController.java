@@ -1,12 +1,13 @@
 package ru.itmo.phonebook.controllers;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 import ru.itmo.phonebook.entities.PhoneRecord;
 import ru.itmo.phonebook.exceptions.PhoneRecordNotFoundException;
 import ru.itmo.phonebook.repositories.PhoneRecordRepository;
 
 @RestController
-@RequestMapping("record")
+@RequestMapping("records")
 public class PhoneRecordController {
     private PhoneRecordRepository phoneRecordRepository;
 
@@ -41,8 +42,9 @@ public class PhoneRecordController {
         return phoneRecordRepository.findById(id).orElseThrow(() -> new PhoneRecordNotFoundException(id));
     }
 
-//    @GetMapping("{id}")
-//    public PhoneRecord getPhoneRecordByNumber(@PathVariable Long id) {
-//        return phoneRecordRepository.findById(id).orElseThrow(() -> new PhoneRecordNotFoundException(id));
-//    }
+    @GetMapping("search")
+    public PhoneRecord getPhoneRecordByNumber(String phone) {
+        System.out.println("PHONE RECORD BY NUMBER "+phone);
+        return phoneRecordRepository.findByPhoneNumberEquals(phone);
+    }
 }
