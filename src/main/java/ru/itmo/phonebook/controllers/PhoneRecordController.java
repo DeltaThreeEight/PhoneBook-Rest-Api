@@ -23,6 +23,7 @@ public class PhoneRecordController {
     public String newPhoneRecord(@RequestBody PhoneRecord newPhoneRecord) {
         userRepository.findById(newPhoneRecord.getUser().getId()).map(user -> {
             newPhoneRecord.setUser(user);
+            newPhoneRecord.setPhoneNumber(formatNumber(newPhoneRecord.getPhoneNumber()));
             return phoneRecordRepository.save(newPhoneRecord);
         }).orElseThrow(() -> new UserNotFoundException(newPhoneRecord.getUser().getId()));
 
@@ -36,7 +37,7 @@ public class PhoneRecordController {
 
             record.setUser(user);
             record.setDescription(editedPhoneRecord.getDescription());
-            record.setPhoneNumber(editedPhoneRecord.getPhoneNumber());
+            record.setPhoneNumber(formatNumber(editedPhoneRecord.getPhoneNumber()));
             return phoneRecordRepository.save(record);
         }).orElseThrow(() -> new PhoneRecordNotFoundException(editedPhoneRecord.getId()));
 
@@ -61,6 +62,18 @@ public class PhoneRecordController {
 
     @GetMapping("search")
     public PhoneRecord getPhoneRecordByNumber(String phone) {
-        return phoneRecordRepository.findByPhoneNumberEquals(phone);
+        return phoneRecordRepository.findByPhoneNumberEquals(formatNumber(phone));
+    }
+
+    private String formatNumber(String unformattedPhone) {
+        String processingString = unformattedPhone.replaceAll("\\s+","");
+
+        if (processingString.startsWith("+"))
+            processingString = processingString.replaceFirst("\\+", "");
+
+        if (processingString.startsWith("7"))
+            processingString = processingString.replaceFirst("7", "8");
+
+        return processingString;
     }
 }
